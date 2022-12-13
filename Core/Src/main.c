@@ -46,27 +46,13 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   
-  unsigned int counter = 0;
+  int counter = 0;
   
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
-  ++counter;
+  while (counter < 21) {
+    ++counter;
+  }
+  
+  return 0;
 }
 
 /**
