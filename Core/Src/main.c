@@ -30,6 +30,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 
+int counter = 0;
+
 /**
   * @brief  The application entry point.
   * @retval int
@@ -46,11 +48,25 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   
-  int counter = 0;
+  // this variable is local to the main function and is stored in the system registers
+  //int counter = 0;  
   
-  while (counter < 21) {
-    ++counter;
+  // Create a pointer that can hold the address of an integer variable
+  int *pInt;
+  // Assign the address of the counter variable to the pointer variable using the ampersand (address of)
+  pInt = &counter;
+  
+  // Use the pointer variable to access and manipulate the counter variable
+  // When you want to access the contents of a memory address held by a pointer you use the star (dereference)
+  while (*pInt < 21) {
+    ++(*pInt);
   }
+  
+  // Use the cast to int pointer conversion to manually assign an address to a pointer variable
+  // This is not always a good idea!! Memory alignment not automatically checked.
+  pInt = (int *)0x20000002;
+  // the BEEF part of 0xDEADBEEF gets written in the counter variables memory space!!!
+  *pInt = 0xDEADBEEF;
   
   return 0;
 }
