@@ -52,7 +52,8 @@ int main(void)
     // use a pointer to the GPIOB output data register to set the LED pin
     // The LED is connected to pin PB13
     // Port B starts at address 0x48000400 and the ODR register has an offset of 0x14
-    *((unsigned int *)0x48000414) ^= 0x2000U;  // toggle bit 13 using an exclusive OR
+    //GPIOBODR ^= 0x2000U;  // toggle bit 13 using an exclusive OR
+    GPIOB->ODR ^= GPIO_ODR_OD13; //using the #defines provided by ST
     
     // simple sleep function
     int counter = 0;
@@ -61,7 +62,8 @@ int main(void)
     }  
     
     // toggle the LED again
-    *((unsigned int *)0x48000414) ^= 0x2000U;
+    //GPIOBODR ^= 0x2000U;
+    GPIOB->ODR ^= GPIO_ODR_OD13;
     
     //sleep
     counter = 0;

@@ -84,6 +84,13 @@ void Error_Handler(void);
 #define SWO_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
+//use the #defines provided in the stm32l433xx.h header file provided by ST instead of these
+//#define GPIO_B_BASE (0x48000400U) // macro to be used when offsetting from the GPIOB base address
+//#define GPIO_ODR_OFFSET (0x14U)   // GPIO ODR register has offset of 0x14 as given in datasheet
+//#define GPIOBODR (*((unsigned int *)0x48000414))  // Use the preprocessor to replace the cryptic
+                                                  // register addresses with something more readable
+//Replace the previous #define for the GPIOBODR with one using the base address and ODR offset macros
+//#define GPIOBODR (*((unsigned int *)(GPIO_B_BASE + GPIO_ODR_OFFSET)))
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
