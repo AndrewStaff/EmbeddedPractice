@@ -56,7 +56,7 @@ int main(void)
     GPIOB->ODR ^= GPIO_ODR_OD13; //using the #defines provided by ST
     
     // simple sleep function
-    int counter = 0;
+    volatile int counter = 0;  //label counter as volatile to prevent compiler optimising it out
     while(counter < 10000000) {
       ++counter;
     }  
