@@ -48,6 +48,32 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   
+  /*Variables to demonstrate the C bitwise operators*/
+  unsigned int a = 0x5A5A5A5AU;
+  unsigned int b = 0xDEADBEEFU;
+  volatile unsigned int c = 0U; //store the result of the bitwise operations
+  
+  c = a | b;  //bitwise OR
+  c = a & b;  //bitwise AND
+  c = a ^ b;  //bitwise exclusive OR
+  c = ~b;     //bit inversion, 1's complement, NOT
+  c = b >> 1; //right shift by 1 bit position. This is equivalent to divide by 2^1
+  c = b << 3; //left shift by 3 bit positions. This is equivalent to multiply by 2^3
+  //NOTE: if the result of the right shift (multiply) does not fit in 32 bits then
+  //      the result will be incorrect
+  //NOTE: for unsigned numbers the shift is a logical shift which will shift 0's into the
+  //      MSB position
+  
+  int x = 1024;
+  int y = -1024;
+  volatile int z; //store the result of the bitwise operations
+  
+  z = x >> 3; //arithmetic right shift is divide by 2^3(8) on signed number
+  z = y >> 3;
+  //NOTE: for signed numbers the shift is an arithmetic shift which will shift 0's into the
+  //      MSB position if the MSB is 0 before the shift, and shift 1's into the MSB positions
+  //      if the MSB is 1 before the shift.
+  
   while(1) {
     // use a pointer to the GPIOB output data register to set the LED pin
     // The LED is connected to pin PB13
