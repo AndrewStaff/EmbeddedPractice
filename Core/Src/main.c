@@ -79,7 +79,8 @@ int main(void)
     // The LED is connected to pin PB13
     // Port B starts at address 0x48000400 and the ODR register has an offset of 0x14
     //GPIOBODR ^= 0x2000U;  // toggle bit 13 using an exclusive OR
-    GPIOB->ODR ^= GPIO_ODR_OD13; //using the #defines provided by ST
+    // Use the bit set coding idiom to set an individual bit
+    GPIOB->ODR |= GPIO_ODR_OD13; //using the #defines provided by ST
     
     // simple sleep function
     volatile int counter = 0;  //label counter as volatile to prevent compiler optimising it out
@@ -89,7 +90,8 @@ int main(void)
     
     // toggle the LED again
     //GPIOBODR ^= 0x2000U;
-    GPIOB->ODR ^= GPIO_ODR_OD13;
+    // Use the bit clear idiom to clear an individual bit
+    GPIOB->ODR &= ~GPIO_ODR_OD13;
     
     //sleep
     counter = 0;
