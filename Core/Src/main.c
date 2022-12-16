@@ -48,55 +48,27 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   
-  /*Variables to demonstrate the C bitwise operators*/
-  unsigned int a = 0x5A5A5A5AU;
-  unsigned int b = 0xDEADBEEFU;
-  volatile unsigned int c = 0U; //store the result of the bitwise operations
-  
-  c = a | b;  //bitwise OR
-  c = a & b;  //bitwise AND
-  c = a ^ b;  //bitwise exclusive OR
-  c = ~b;     //bit inversion, 1's complement, NOT
-  c = b >> 1; //right shift by 1 bit position. This is equivalent to divide by 2^1
-  c = b << 3; //left shift by 3 bit positions. This is equivalent to multiply by 2^3
-  //NOTE: if the result of the right shift (multiply) does not fit in 32 bits then
-  //      the result will be incorrect
-  //NOTE: for unsigned numbers the shift is a logical shift which will shift 0's into the
-  //      MSB position
-  
-  int x = 1024;
-  int y = -1024;
-  volatile int z; //store the result of the bitwise operations
-  
-  z = x >> 3; //arithmetic right shift is divide by 2^3(8) on signed number
-  z = y >> 3;
-  //NOTE: for signed numbers the shift is an arithmetic shift which will shift 0's into the
-  //      MSB position if the MSB is 0 before the shift, and shift 1's into the MSB positions
-  //      if the MSB is 1 before the shift.
-  
   while(1) {
     // use a pointer to the GPIOB output data register to set the LED pin
-    // The LED is connected to pin PB13
-    // Port B starts at address 0x48000400 and the ODR register has an offset of 0x14
-    //GPIOBODR ^= 0x2000U;  // toggle bit 13 using an exclusive OR
-    // Use the bit set coding idiom to set an individual bit
-    GPIOB->ODR |= GPIO_ODR_OD13; //using the #defines provided by ST
+    // Use the BSRR register to perform atomic set of output bit
+    GPIOB->BSRR = GPIO_BSRR_BS13; //using
     
     // simple sleep function
-    volatile int counter = 0;  //label counter as volatile to prevent compiler optimising it out
-    while(counter < 10000000) {
-      ++counter;
+    // Create an array of 2 counters. One for setting LED and another for resetting LED
+    volatile int counter[2] = {0 ,0};  //label counter as volatile to prevent compiler optimising it out
+    while(counter[0] < 10000000) {
+      ++counter[0];
     }  
     
     // toggle the LED again
-    //GPIOBODR ^= 0x2000U;
-    // Use the bit clear idiom to clear an individual bit
-    GPIOB->ODR &= ~GPIO_ODR_OD13;
+    // Use the BSRR to atomic reset the output
+    GPIOB->BSRR = GPIO_BSRR_BR13;
     
     //sleep
-    counter = 0;
-    while(counter < 10000000) {
-      ++counter;
+    //counter is the address of the 1st element in the counter array
+    //to access the second counter value, add 1 to the first elements address, then dereference
+    while(*(counter + 1) < 10000000) {
+      ++counter[1];
     }
   }
    
