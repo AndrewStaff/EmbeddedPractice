@@ -30,7 +30,13 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 
-int counter = 0;
+// simple sleep function
+void delay(int aCounterValue) {
+  volatile int counter = 0; //if counter is not volatile then the SP is not used
+  while(counter < aCounterValue) {
+    ++counter;
+  }
+}
 
 /**
   * @brief  The application entry point.
@@ -53,23 +59,15 @@ int main(void)
     // Use the BSRR register to perform atomic set of output bit
     GPIOB->BSRR = GPIO_BSRR_BS13; //using
     
-    // simple sleep function
-    // Create an array of 2 counters. One for setting LED and another for resetting LED
-    volatile int counter[2] = {0 ,0};  //label counter as volatile to prevent compiler optimising it out
-    while(counter[0] < 10000000) {
-      ++counter[0];
-    }  
+    //sleep
+    delay(10000000);
     
     // toggle the LED again
     // Use the BSRR to atomic reset the output
     GPIOB->BSRR = GPIO_BSRR_BR13;
     
     //sleep
-    //counter is the address of the 1st element in the counter array
-    //to access the second counter value, add 1 to the first elements address, then dereference
-    while(*(counter + 1) < 10000000) {
-      ++counter[1];
-    }
+    delay(5000000);
   }
    
   return 0;
