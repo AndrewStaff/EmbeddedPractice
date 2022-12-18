@@ -19,7 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "delay.h"
 
 
 /* Private variables ---------------------------------------------------------*/
@@ -30,13 +30,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 
-// simple sleep function
-void delay(int aCounterValue) {
-  volatile int counter = 0; //if counter is not volatile then the SP is not used
-  while(counter < aCounterValue) {
-    ++counter;
-  }
-}
+// Factorial function prototype
+unsigned fact(unsigned aNumber);
 
 /**
   * @brief  The application entry point.
@@ -53,6 +48,12 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+  
+  volatile unsigned int x = 0U;
+  
+  x = fact(0U);
+  x = 2U + 3U * fact(1U);
+  (void)fact(5U); // discarding the return value of fact()
   
   while(1) {
     // use a pointer to the GPIOB output data register to set the LED pin
@@ -212,6 +213,18 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+// Recursive function to calculate the factorial of a given number
+// 0! = 1
+// n! = n * (n-1)! for n > 0
+unsigned fact(unsigned aNumber) {
+    if (aNumber == 0) {
+      return 1U;
+    }
+    else {
+      return (aNumber * fact(aNumber - 1U));
+    }
+}
 
 /* USER CODE END 4 */
 

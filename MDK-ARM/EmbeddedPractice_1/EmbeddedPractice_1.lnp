@@ -3,6 +3,7 @@
 "embeddedpractice_1\main.o"
 "embeddedpractice_1\stm32l4xx_it.o"
 "embeddedpractice_1\stm32l4xx_hal_msp.o"
+"embeddedpractice_1\delay.o"
 "embeddedpractice_1\stm32l4xx_hal_tim.o"
 "embeddedpractice_1\stm32l4xx_hal_tim_ex.o"
 "embeddedpractice_1\stm32l4xx_hal_uart.o"
