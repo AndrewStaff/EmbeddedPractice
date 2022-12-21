@@ -30,8 +30,13 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 
-// Factorial function prototype
+// My function prototypes
 unsigned fact(unsigned aNumber);
+int *swap(volatile int *x, volatile int *y);
+
+//my variables
+volatile int x = 10000000;
+volatile int y = 5000000;
 
 /**
   * @brief  The application entry point.
@@ -49,29 +54,27 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   
-  volatile unsigned int x = 0U;
-  
-  x = fact(0U);
-  x = 2U + 3U * fact(1U);
-  (void)fact(5U); // discarding the return value of fact()
-  
   while(1) {
+    
+    //Values used to determine the delay
+    int *p = swap(&x, &y);
+    
     // use a pointer to the GPIOB output data register to set the LED pin
     // Use the BSRR register to perform atomic set of output bit
     GPIOB->BSRR = GPIO_BSRR_BS13; //using
     
     //sleep
-    delay(10000000);
+    delay(p[0]);
     
     // toggle the LED again
     // Use the BSRR to atomic reset the output
     GPIOB->BSRR = GPIO_BSRR_BR13;
     
     //sleep
-    delay(5000000);
+    delay(p[1]);
   }
    
-  return 0;
+  //return 0; //remove this to prevent warning
 }
 
 /**
@@ -218,12 +221,27 @@ static void MX_GPIO_Init(void)
 // 0! = 1
 // n! = n * (n-1)! for n > 0
 unsigned fact(unsigned aNumber) {
-    if (aNumber == 0) {
-      return 1U;
-    }
-    else {
-      return (aNumber * fact(aNumber - 1U));
-    }
+  //array variable to demonstrate stack overflow
+  //unsigned foo[6];
+  //foo[aNumber] = aNumber;
+  
+  if (aNumber == 0) {
+    return 1U;
+  }
+  else {
+    return (aNumber * fact(aNumber - 1U));
+  }
+}
+
+
+//swap function
+int *swap(volatile int *x, volatile int *y) {
+  static int tmp[2]; //array that will not be stored on the stack
+  tmp[0] = *x;
+  tmp[1] = *y;
+  *x = tmp[1];
+  *y = tmp[0];
+  return tmp;
 }
 
 /* USER CODE END 4 */
