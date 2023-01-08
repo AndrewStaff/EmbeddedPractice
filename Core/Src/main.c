@@ -18,6 +18,8 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
+
 #include "main.h"
 #include "delay.h"
 
@@ -38,6 +40,15 @@ int *swap(volatile int *x, volatile int *y);
 volatile int x = 10000000;
 volatile int y = 5000000;
 
+//variables using standard int definitions
+uint8_t u8a, u8b;
+uint16_t u16c, u16d;
+uint32_t u32e, u32f;
+
+int8_t s8;
+int16_t s16;
+int32_t s32;
+
 /**
   * @brief  The application entry point.
   * @retval int
@@ -55,6 +66,26 @@ int main(void)
   MX_USART2_UART_Init();
   
   while(1) {
+    
+    //check size, in bytes, of each of the standard data types
+    u8a = sizeof(u8a);
+    u16c = sizeof(uint16_t);
+    u32e = sizeof(uint32_t);
+    
+    u8a = 0xa1U;
+    u16c = 0xc1c2U;
+    u32e = 0xe1e2e3e4;
+    
+    u8b = u8a;
+    u16d = u16c;
+    u32f = u32e;
+    
+    u16c = 40000U;
+    u16d = 30000U;
+    u32e = (uint32_t)u16c + u16d; //more portable to cast one operand to same type as result
+    
+    u16c = 100U;
+    s32 = 10 - (int16_t)u16c;
     
     //Values used to determine the delay
     int *p = swap(&x, &y);
