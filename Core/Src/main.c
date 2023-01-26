@@ -40,14 +40,29 @@ int *swap(volatile int *x, volatile int *y);
 volatile int x = 10000000;
 volatile int y = 5000000;
 
-//variables using standard int definitions
-uint8_t u8a, u8b;
-uint16_t u16c, u16d;
-uint32_t u32e, u32f;
+//Define a structure with 2 data members
+//The order of the members in memory is exactly as ordered in the definition
+//typedef __packed struct {
+typedef struct {  
+  uint8_t y;
+  uint16_t x;
+} Point;
 
-int8_t s8;
-int16_t s16;
-int32_t s32;
+//a struct can contain other structs
+typedef struct {
+  Point top_left;
+  Point bot_right;
+} Window;
+
+//a struct can contain arrays of other structs
+typedef struct {
+  Point corners[3];
+} Triangle;
+
+//create 2 new Point variables
+Point p1, p2;
+Window w, w2;
+Triangle t;
 
 /**
   * @brief  The application entry point.
@@ -65,27 +80,40 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   
+  //pointers to structs
+  //better than assigning one struct equal to another because this would require more memory
+  Point *pp; //Pointer variable that points to a point type
+  Window *wp;
+  
+  //use the struct variable
+  p1.x = sizeof(Point); //size of struct is actually 4 bytes. Gets padded
+  //p1.y = p1.x - 3U;
+  p1.y = 0xAAU; //Point is 3 bytes when packed
+  
+  w.top_left.x = 1U;
+  w.bot_right.y = 2U;
+  
+  t.corners[0].x = 1U;
+  t.corners[2].y = 2U;
+  
+  //copy structs. Uses more memory
+  p2 = p1; //assign one struct equal to another
+  w2 = w;  //more complex structs
+  
+  //pointers to structs
+  pp = &p1;
+  wp = &w2;
+  
+  //Access data member through pointer using the dot operator
+  //must use parenthesis because of dot operator precedence
+  (*pp).x = 1U;
+  (*wp).top_left = *pp;
+  
+  //Better way to access pointer data using member access operator
+  pp->x =  2U;
+  wp->top_left.y = 3U;
+  
   while(1) {
-    
-    //check size, in bytes, of each of the standard data types
-    u8a = sizeof(u8a);
-    u16c = sizeof(uint16_t);
-    u32e = sizeof(uint32_t);
-    
-    u8a = 0xa1U;
-    u16c = 0xc1c2U;
-    u32e = 0xe1e2e3e4;
-    
-    u8b = u8a;
-    u16d = u16c;
-    u32f = u32e;
-    
-    u16c = 40000U;
-    u16d = 30000U;
-    u32e = (uint32_t)u16c + u16d; //more portable to cast one operand to same type as result
-    
-    u16c = 100U;
-    s32 = 10 - (int16_t)u16c;
     
     //Values used to determine the delay
     int *p = swap(&x, &y);
